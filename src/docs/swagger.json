@@ -1,0 +1,2542 @@
+{
+    "produces": [
+        "application/json"
+    ],
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "This is the Go Profile API documentation.",
+        "title": "Go Profile API",
+        "contact": {},
+        "version": "1"
+    },
+    "host": "127.0.0.1:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "Login a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login",
+                "parameters": [
+                    {
+                        "description": "Login request object",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid email or password",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "description": "Logout the currently logged in user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout",
+                "responses": {
+                    "200": {
+                        "description": "Logged out",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "Register a new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Register",
+                "parameters": [
+                    {
+                        "description": "Registration request object",
+                        "name": "register",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.RegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/auth.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/certificates/{userid}": {
+            "get": {
+                "description": "Retrieves all certificates for a given user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Get all certificates",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/certificates.Certificate"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\":\t\"Could not retrieve certificates",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Creates a new certificate entry for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Create a new certificate entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Certificate JSON object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/certificates.Certificate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\":\t\"Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "error\":\t\"Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "error\":\t\"Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "error\":\t\"User not found",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "error\":\t\"Certificate already exists",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error\":\t\"Could not create certificate",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/certificates/{userid}/{certificateid}": {
+            "get": {
+                "description": "Retrieves a specific certificate entry for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Get a certificate entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Certificate ID",
+                        "name": "certificateid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.Certificate"
+                        }
+                    },
+                    "400": {
+                        "description": "error\":\t\"Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "error\":\t\"Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "error\":\t\"Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "error\":\t\"Certificate not found",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error\":\t\"Could not retrieve certificate",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates or creates a specific certificate entry for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Update or create a certificate entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Certificate ID",
+                        "name": "certificateid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Certificate JSON object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/certificates.Certificate"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "error\":\t\"Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "error\":\t\"Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "error\":\t\"Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error\":\t\"Could not update certificate",
+                        "schema": {
+                            "$ref": "#/definitions/certificates.JSONResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes a specific certificate entry for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Delete a certificate entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Certificate ID",
+                        "name": "certificateid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/certificates/{userid}/{certificateid}/cert_image": {
+            "put": {
+                "description": "Uploads or updates the certificate image for a specific certificate entry",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Certificates"
+                ],
+                "summary": "Upload or update certificate image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Certificate ID",
+                        "name": "certificateid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Certificate Image",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/experience/{userid}": {
+            "get": {
+                "description": "Retrieves all work experience records for the specified user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Get all user experiences",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/experience.Experience"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "error\":\t\"Could not retrieve experience",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Creates a new work experience record for the specified user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Create a new experience item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Experience Object",
+                        "name": "Experience",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/experience.Experience"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/experience.Experience"
+                        }
+                    },
+                    "400": {
+                        "description": "error\":\t\"Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "error\":\t\"Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "error\":\t\"Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "error\":\t\"User not found",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "error\":\t\"Experience already exists",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "error\":\t\"Invalid experience type",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error\":\t\"Could not insert experience",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/experience/{userid}/{experienceid}": {
+            "get": {
+                "description": "Retrieves a specific work experience record for the specified user and experience ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Get specific experience item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Experience ID",
+                        "name": "experienceid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/experience.Experience"
+                        }
+                    },
+                    "500": {
+                        "description": "error\":\t\"Could not retrieve experience",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates a specific work experience record for the specified user and experience ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Update specific experience item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Experience ID",
+                        "name": "experienceid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Experience Object",
+                        "name": "Experience",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/experience.Experience"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\":\t\"Experience updated",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "error\":\t\"Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "error\":\t\"Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "error\":\t\"Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error\":\t\"Could not update experience",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Deletes a specific work experience record for the specified user and experience ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Delete specific experience item",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Experience ID",
+                        "name": "experienceid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "message\":\t\"Experience deleted",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error\":\t\"Could not delete experience",
+                        "schema": {
+                            "$ref": "#/definitions/experience.JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/journal": {
+            "get": {
+                "description": "Get all public journal entries, supports filtering by date range, taxonomy, and users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Get public journal entries",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Start date",
+                        "name": "start",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "End date",
+                        "name": "end",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Category",
+                        "name": "category",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Subcategory",
+                        "name": "subcategory",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Topic",
+                        "name": "topic",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Tag",
+                        "name": "tag",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/journal.JournalEntry"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new journal entry",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Create a new journal entry",
+                "parameters": [
+                    {
+                        "description": "Journal Entry",
+                        "name": "entry",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/journal.Entry"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/journal.JournalEntry"
+                        }
+                    },
+                    "400": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/journal/u/{userid}": {
+            "get": {
+                "description": "Get all journal entries for a specific user by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Get user-specific journal entries",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/journal.JournalEntry"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/journal/{journalid}": {
+            "get": {
+                "description": "Get a single journal entry by ID, returns metadata if the user is authenticated",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Get a single journal entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Journal ID",
+                        "name": "journalid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/journal.JournalEntry"
+                        }
+                    },
+                    "404": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a journal entry by ID, increments the version",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Update a journal entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Journal ID",
+                        "name": "journalid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated Entry",
+                        "name": "entry",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/journal.Entry"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/journal.JournalEntry"
+                        }
+                    },
+                    "400": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a journal entry by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Delete a journal entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Journal ID",
+                        "name": "journalid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Journal entry deleted",
+                        "schema": {
+                            "$ref": "#/definitions/journal.DeleteResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/journal/{journalid}/meta": {
+            "get": {
+                "description": "Get metadata for a journal entry by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Get journal metadata",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Journal ID",
+                        "name": "journalid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "createdAt\", \"updatedAt\", \"version\", \"status\", \"userID",
+                        "schema": {
+                            "$ref": "#/definitions/journal.SuccessResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/journal/{journalid}/process": {
+            "put": {
+                "description": "Trigger processing for a journal entry by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Process a journal entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Journal ID",
+                        "name": "journalid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Journal entry is being processed",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ProcessingResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/journal/{journalid}/status": {
+            "put": {
+                "description": "Set the status of a journal entry by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Set the status of a journal entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Journal ID",
+                        "name": "journalid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Status",
+                        "name": "status",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Journal status updated",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ProcessingResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/journal/{journalid}/version": {
+            "put": {
+                "description": "Set the current version of a journal entry by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Set the current version of a journal entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Journal ID",
+                        "name": "journalid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Version",
+                        "name": "version",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/journal.JournalEntry"
+                        }
+                    },
+                    "400": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/journal/{journalid}/versions": {
+            "get": {
+                "description": "Get all versions of a journal entry by ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "journal"
+                ],
+                "summary": "Get journal versions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Journal ID",
+                        "name": "journalid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/journal.Entry"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Error message",
+                        "schema": {
+                            "$ref": "#/definitions/journal.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/profile/{userid}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves the profile of the user with the specified user ID.",
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Retrieve a user's profile.",
+                "operationId": "get-profile",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the user whose profile to get",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profile retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/profile.Profile"
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/profile.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not retrieve profile",
+                        "schema": {
+                            "$ref": "#/definitions/profile.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates the profile of the user with the specified user ID using the provided profile data.",
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Update a user's profile.",
+                "operationId": "update-profile",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the user whose profile to update",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Profile object that needs to be updated",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/profile.Profile"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profile updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/profile.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/profile.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not update profile",
+                        "schema": {
+                            "$ref": "#/definitions/profile.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Creates a new profile for the user with the specified user ID using the provided profile data.",
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Create a new user profile.",
+                "operationId": "create-profile",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the user for whom the profile is to be created",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Profile object that needs to be created",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/profile.Profile"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Profile created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/profile.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/profile.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not create profile",
+                        "schema": {
+                            "$ref": "#/definitions/profile.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/profile/{userid}/image": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates the profile image of the user with the specified user ID.",
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Update a user's profile image.",
+                "operationId": "update-profile-image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the user whose profile image to update",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Profile image to upload",
+                        "name": "profileImage",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Profile image updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Profile image not found",
+                        "schema": {
+                            "$ref": "#/definitions/profile.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/profile.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not upload image",
+                        "schema": {
+                            "$ref": "#/definitions/profile.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/qualifications/{userid}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves all qualifications associated with the specified user ID.",
+                "tags": [
+                    "Qualifications"
+                ],
+                "summary": "Get all qualifications for a user.",
+                "operationId": "get-qualifications",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the user whose qualifications are to be retrieved",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/qualifications.Qualification"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not retrieve qualifications",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Creates a new qualification entry associated with the specified user ID using the provided qualification data.",
+                "tags": [
+                    "Qualifications"
+                ],
+                "summary": "Create a new qualification for a user.",
+                "operationId": "post-qualification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the user for whom the qualification is to be created",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Qualification object to be created",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.Qualification"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Qualification Created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not update qualification",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/qualifications/{userid}/{qualificationid}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieves the qualification entry associated with the specified user ID and qualification ID.",
+                "tags": [
+                    "Qualifications"
+                ],
+                "summary": "Get a specific qualification for a user.",
+                "operationId": "get-qualification-entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the user whose qualification is to be retrieved",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The ID of the qualification to be retrieved",
+                        "name": "qualificationid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.Qualification"
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not retrieve qualification",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates the qualification entry associated with the specified user ID and qualification ID using the provided qualification data.",
+                "tags": [
+                    "Qualifications"
+                ],
+                "summary": "Update a specific qualification for a user.",
+                "operationId": "put-qualification-entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the user whose qualification is to be updated",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The ID of the qualification to be updated",
+                        "name": "qualificationid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Qualification object that needs to be updated",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.Qualification"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Qualification updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not update qualification",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Deletes the qualification entry associated with the specified user ID and qualification ID.",
+                "tags": [
+                    "Qualifications"
+                ],
+                "summary": "Delete a specific qualification for a user.",
+                "operationId": "delete-qualification-entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the user whose qualification is to be deleted",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The ID of the qualification to be deleted",
+                        "name": "qualificationid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Qualification deleted",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not delete qualification",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/qualifications/{userid}/{qualificationid}/cert_image": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Updates the certificate image for the qualification associated with the specified user ID and qualification ID using the provided image file.",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "tags": [
+                    "Qualifications"
+                ],
+                "summary": "Upload a certificate image for a qualification.",
+                "operationId": "put-qualification-image",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "The ID of the user whose qualification certificate image is to be updated",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "The ID of the qualification whose certificate image is to be updated",
+                        "name": "qualificationid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Certificate image file to upload",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "cert image uploaded",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Not authenticated",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "could not update qualification",
+                        "schema": {
+                            "$ref": "#/definitions/qualifications.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/skills/{userid}": {
+            "get": {
+                "description": "Retrieve all skills for a specific user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Retrieve all skills for a specific user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Skills retrieved",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/skills.Skill"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "error\":\t\"Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "error\":\t\"Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "error\":\t\"Skill not found",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error\":\t\"Could not retrieve skills",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new skill for a specific user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Create a new skill for a specific user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Skill details",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/skills.Skill"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Skill created",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Skill not found",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Skill already exists",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not create skill",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/skills/{userid}/{skillId}": {
+            "put": {
+                "description": "Update a specific skill for a specific user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Update a specific skill for a specific user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Skill Name",
+                        "name": "skillname",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Skill details",
+                        "name": "req",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/skills.Skill"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Skill updated",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Skill not found",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not update skill",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/skills/{userid}/{skillid}": {
+            "get": {
+                "description": "Retrieve a specific skill for a specific user",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Retrieve a specific skill for a specific user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Skill ID",
+                        "name": "skillid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Skill retrieved",
+                        "schema": {
+                            "$ref": "#/definitions/skills.Skill"
+                        }
+                    },
+                    "401": {
+                        "description": "error\":\t\"Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "error\":\t\"Skill not found",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "error\":\t\"Could not retrieve skill",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a specific skill for a specific user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Delete a specific skill for a specific user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "userid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Skill ID",
+                        "name": "skillid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Skill deleted",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Skill not found",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Could not delete skill",
+                        "schema": {
+                            "$ref": "#/definitions/skills.JSONResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "auth.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "Error message\nexample: Invalid request body",
+                    "type": "string"
+                }
+            }
+        },
+        "auth.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.RegisterRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "certificates.Certificate": {
+            "type": "object",
+            "properties": {
+                "certificate_id": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "start": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "certificates.JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "experience.Experience": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end": {
+                    "type": "string"
+                },
+                "experience_id": {
+                    "type": "string"
+                },
+                "notes": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "start": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "experience.JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "journal.DeleteResponse": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "journal.Entry": {
+            "type": "object",
+            "properties": {
+                "attachments": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "content": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "journal.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "journal.JournalEntry": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "entries": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/journal.Entry"
+                    }
+                },
+                "journalID": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "summary": {
+                    "type": "string"
+                },
+                "taxonomy": {
+                    "$ref": "#/definitions/journal.Taxonomy"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "journal.ProcessingResponse": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "journal.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "integer"
+                }
+            }
+        },
+        "journal.Taxonomy": {
+            "type": "object",
+            "properties": {
+                "categories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "subcategories": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "profile.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "profile.Profile": {
+            "type": "object",
+            "properties": {
+                "bio": {
+                    "type": "string"
+                },
+                "domain": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "interests": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "number": {
+                    "type": "string"
+                },
+                "profile_img": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "string"
+                }
+            }
+        },
+        "qualifications.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "Error message\nexample: Invalid request body",
+                    "type": "string"
+                }
+            }
+        },
+        "qualifications.Qualification": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "end": {
+                    "type": "string"
+                },
+                "institution": {
+                    "type": "string"
+                },
+                "qualification_id": {
+                    "type": "string"
+                },
+                "start": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "skills.JSONResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "skills.Skill": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "last_used": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "proficiency_level": {
+                    "type": "string"
+                },
+                "skill_id": {
+                    "type": "string"
+                },
+                "started_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

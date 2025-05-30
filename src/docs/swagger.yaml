@@ -1,0 +1,1691 @@
+basePath: /api/v1
+definitions:
+  auth.ErrorResponse:
+    properties:
+      error:
+        description: |-
+          Error message
+          example: Invalid request body
+        type: string
+    type: object
+  auth.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  auth.RegisterRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  certificates.Certificate:
+    properties:
+      certificate_id:
+        type: string
+      description:
+        type: string
+      end:
+        type: string
+      institution:
+        type: string
+      start:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: string
+    type: object
+  certificates.JSONResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  experience.Experience:
+    properties:
+      company:
+        type: string
+      description:
+        type: string
+      end:
+        type: string
+      experience_id:
+        type: string
+      notes:
+        type: string
+      position:
+        type: string
+      start:
+        type: string
+      user_id:
+        type: string
+    type: object
+  experience.JSONResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  journal.DeleteResponse:
+    properties:
+      body:
+        type: string
+      message:
+        type: string
+    type: object
+  journal.Entry:
+    properties:
+      attachments:
+        items:
+          type: string
+        type: array
+      content:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+      version:
+        type: integer
+    type: object
+  journal.ErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  journal.JournalEntry:
+    properties:
+      createdAt:
+        type: string
+      entries:
+        items:
+          $ref: '#/definitions/journal.Entry'
+        type: array
+      journalID:
+        type: string
+      status:
+        type: string
+      summary:
+        type: string
+      taxonomy:
+        $ref: '#/definitions/journal.Taxonomy'
+      updatedAt:
+        type: string
+      userID:
+        type: string
+      version:
+        type: integer
+    type: object
+  journal.ProcessingResponse:
+    properties:
+      body:
+        type: string
+      message:
+        type: string
+    type: object
+  journal.SuccessResponse:
+    properties:
+      createdAt:
+        type: string
+      status:
+        type: string
+      updatedAt:
+        type: string
+      userID:
+        type: string
+      version:
+        type: integer
+    type: object
+  journal.Taxonomy:
+    properties:
+      categories:
+        items:
+          type: string
+        type: array
+      subcategories:
+        items:
+          type: string
+        type: array
+      tags:
+        items:
+          type: string
+        type: array
+      topics:
+        items:
+          type: string
+        type: array
+    type: object
+  profile.ErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  profile.Profile:
+    properties:
+      bio:
+        type: string
+      domain:
+        type: string
+      email:
+        type: string
+      interests:
+        type: string
+      name:
+        type: string
+      number:
+        type: string
+      profile_img:
+        type: string
+      userID:
+        type: string
+    type: object
+  qualifications.ErrorResponse:
+    properties:
+      error:
+        description: |-
+          Error message
+          example: Invalid request body
+        type: string
+    type: object
+  qualifications.Qualification:
+    properties:
+      description:
+        type: string
+      end:
+        type: string
+      institution:
+        type: string
+      qualification_id:
+        type: string
+      start:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: string
+    type: object
+  skills.JSONResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+    type: object
+  skills.Skill:
+    properties:
+      description:
+        type: string
+      last_used:
+        type: string
+      name:
+        type: string
+      proficiency_level:
+        type: string
+      skill_id:
+        type: string
+      started_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+host: 127.0.0.1:8080
+info:
+  contact: {}
+  description: This is the Go Profile API documentation.
+  title: Go Profile API
+  version: "1"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      parameters:
+      - description: Login request object
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token
+          schema:
+            type: string
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+        "401":
+          description: Invalid email or password
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+      summary: Login
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      description: Logout the currently logged in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Logged out
+          schema:
+            type: string
+      summary: Logout
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user
+      parameters:
+      - description: Registration request object
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/auth.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/auth.ErrorResponse'
+      summary: Register
+      tags:
+      - Auth
+  /certificates/{userid}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all certificates for a given user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/certificates.Certificate'
+            type: array
+        "500":
+          description: "error\":\t\"Could not retrieve certificates"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+      summary: Get all certificates
+      tags:
+      - Certificates
+    post:
+      consumes:
+      - application/json
+      description: Creates a new certificate entry for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Certificate JSON object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/certificates.Certificate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: "error\":\t\"Invalid request body"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "401":
+          description: "error\":\t\"Unauthorized"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "403":
+          description: "error\":\t\"Forbidden"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "404":
+          description: "error\":\t\"User not found"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "409":
+          description: "error\":\t\"Certificate already exists"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "500":
+          description: "error\":\t\"Could not create certificate"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new certificate entry
+      tags:
+      - Certificates
+  /certificates/{userid}/{certificateid}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a specific certificate entry for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Certificate ID
+        in: path
+        name: certificateid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a certificate entry
+      tags:
+      - Certificates
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a specific certificate entry for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Certificate ID
+        in: path
+        name: certificateid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/certificates.Certificate'
+        "400":
+          description: "error\":\t\"Invalid request body"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "401":
+          description: "error\":\t\"Unauthorized"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "403":
+          description: "error\":\t\"Forbidden"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "404":
+          description: "error\":\t\"Certificate not found"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "500":
+          description: "error\":\t\"Could not retrieve certificate"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+      summary: Get a certificate entry
+      tags:
+      - Certificates
+    put:
+      consumes:
+      - application/json
+      description: Updates or creates a specific certificate entry for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Certificate ID
+        in: path
+        name: certificateid
+        required: true
+        type: string
+      - description: Certificate JSON object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/certificates.Certificate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: "error\":\t\"Invalid request body"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "401":
+          description: "error\":\t\"Unauthorized"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "403":
+          description: "error\":\t\"Forbidden"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+        "500":
+          description: "error\":\t\"Could not update certificate"
+          schema:
+            $ref: '#/definitions/certificates.JSONResponse'
+      security:
+      - BearerAuth: []
+      summary: Update or create a certificate entry
+      tags:
+      - Certificates
+  /certificates/{userid}/{certificateid}/cert_image:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Uploads or updates the certificate image for a specific certificate
+        entry
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Certificate ID
+        in: path
+        name: certificateid
+        required: true
+        type: string
+      - description: Certificate Image
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Upload or update certificate image
+      tags:
+      - Certificates
+  /experience/{userid}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieves all work experience records for the specified user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/experience.Experience'
+            type: array
+        "500":
+          description: "error\":\t\"Could not retrieve experience"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+      summary: Get all user experiences
+      tags:
+      - experience
+    post:
+      consumes:
+      - application/json
+      description: Creates a new work experience record for the specified user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Experience Object
+        in: body
+        name: Experience
+        required: true
+        schema:
+          $ref: '#/definitions/experience.Experience'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/experience.Experience'
+        "400":
+          description: "error\":\t\"Invalid request body"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+        "401":
+          description: "error\":\t\"Unauthorized"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+        "403":
+          description: "error\":\t\"Forbidden"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+        "404":
+          description: "error\":\t\"User not found"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+        "409":
+          description: "error\":\t\"Experience already exists"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+        "422":
+          description: "error\":\t\"Invalid experience type"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+        "500":
+          description: "error\":\t\"Could not insert experience"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+      summary: Create a new experience item
+      tags:
+      - experience
+  /experience/{userid}/{experienceid}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a specific work experience record for the specified user
+        and experience ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Experience ID
+        in: path
+        name: experienceid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "message\":\t\"Experience deleted"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+        "500":
+          description: "error\":\t\"Could not delete experience"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+      summary: Delete specific experience item
+      tags:
+      - experience
+    get:
+      consumes:
+      - application/json
+      description: Retrieves a specific work experience record for the specified user
+        and experience ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Experience ID
+        in: path
+        name: experienceid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/experience.Experience'
+        "500":
+          description: "error\":\t\"Could not retrieve experience"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+      summary: Get specific experience item
+      tags:
+      - experience
+    put:
+      consumes:
+      - application/json
+      description: Updates a specific work experience record for the specified user
+        and experience ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Experience ID
+        in: path
+        name: experienceid
+        required: true
+        type: string
+      - description: Experience Object
+        in: body
+        name: Experience
+        required: true
+        schema:
+          $ref: '#/definitions/experience.Experience'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "message\":\t\"Experience updated"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+        "400":
+          description: "error\":\t\"Invalid request body"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+        "401":
+          description: "error\":\t\"Unauthorized"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+        "403":
+          description: "error\":\t\"Forbidden"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+        "500":
+          description: "error\":\t\"Could not update experience"
+          schema:
+            $ref: '#/definitions/experience.JSONResponse'
+      security:
+      - BearerAuth: []
+      summary: Update specific experience item
+      tags:
+      - experience
+  /journal:
+    get:
+      description: Get all public journal entries, supports filtering by date range,
+        taxonomy, and users
+      parameters:
+      - description: Start date
+        in: query
+        name: start
+        type: string
+      - description: End date
+        in: query
+        name: end
+        type: string
+      - description: Category
+        in: query
+        name: category
+        type: string
+      - description: Subcategory
+        in: query
+        name: subcategory
+        type: string
+      - description: Topic
+        in: query
+        name: topic
+        type: string
+      - description: Tag
+        in: query
+        name: tag
+        type: string
+      - description: User ID
+        in: query
+        name: user
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/journal.JournalEntry'
+            type: array
+        "500":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+      summary: Get public journal entries
+      tags:
+      - journal
+    post:
+      consumes:
+      - application/json
+      description: Create a new journal entry
+      parameters:
+      - description: Journal Entry
+        in: body
+        name: entry
+        required: true
+        schema:
+          $ref: '#/definitions/journal.Entry'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/journal.JournalEntry'
+        "400":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+        "500":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+      summary: Create a new journal entry
+      tags:
+      - journal
+  /journal/{journalid}:
+    delete:
+      description: Delete a journal entry by ID
+      parameters:
+      - description: Journal ID
+        in: path
+        name: journalid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Journal entry deleted
+          schema:
+            $ref: '#/definitions/journal.DeleteResponse'
+        "500":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+      summary: Delete a journal entry
+      tags:
+      - journal
+    get:
+      description: Get a single journal entry by ID, returns metadata if the user
+        is authenticated
+      parameters:
+      - description: Journal ID
+        in: path
+        name: journalid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/journal.JournalEntry'
+        "404":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+      summary: Get a single journal entry
+      tags:
+      - journal
+    put:
+      consumes:
+      - application/json
+      description: Update a journal entry by ID, increments the version
+      parameters:
+      - description: Journal ID
+        in: path
+        name: journalid
+        required: true
+        type: string
+      - description: Updated Entry
+        in: body
+        name: entry
+        required: true
+        schema:
+          $ref: '#/definitions/journal.Entry'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/journal.JournalEntry'
+        "400":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+        "404":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+        "500":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+      summary: Update a journal entry
+      tags:
+      - journal
+  /journal/{journalid}/meta:
+    get:
+      description: Get metadata for a journal entry by ID
+      parameters:
+      - description: Journal ID
+        in: path
+        name: journalid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: createdAt", "updatedAt", "version", "status", "userID
+          schema:
+            $ref: '#/definitions/journal.SuccessResponse'
+        "404":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+      summary: Get journal metadata
+      tags:
+      - journal
+  /journal/{journalid}/process:
+    put:
+      consumes:
+      - application/json
+      description: Trigger processing for a journal entry by ID
+      parameters:
+      - description: Journal ID
+        in: path
+        name: journalid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Journal entry is being processed
+          schema:
+            $ref: '#/definitions/journal.ProcessingResponse'
+        "500":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+      summary: Process a journal entry
+      tags:
+      - journal
+  /journal/{journalid}/status:
+    put:
+      consumes:
+      - application/json
+      description: Set the status of a journal entry by ID
+      parameters:
+      - description: Journal ID
+        in: path
+        name: journalid
+        required: true
+        type: string
+      - description: Status
+        in: body
+        name: status
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Journal status updated
+          schema:
+            $ref: '#/definitions/journal.ProcessingResponse'
+        "400":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+        "500":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+      summary: Set the status of a journal entry
+      tags:
+      - journal
+  /journal/{journalid}/version:
+    put:
+      consumes:
+      - application/json
+      description: Set the current version of a journal entry by ID
+      parameters:
+      - description: Journal ID
+        in: path
+        name: journalid
+        required: true
+        type: string
+      - description: Version
+        in: body
+        name: version
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/journal.JournalEntry'
+        "400":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+        "404":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+        "500":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+      summary: Set the current version of a journal entry
+      tags:
+      - journal
+  /journal/{journalid}/versions:
+    get:
+      description: Get all versions of a journal entry by ID
+      parameters:
+      - description: Journal ID
+        in: path
+        name: journalid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/journal.Entry'
+            type: array
+        "404":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+      summary: Get journal versions
+      tags:
+      - journal
+  /journal/u/{userid}:
+    get:
+      description: Get all journal entries for a specific user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/journal.JournalEntry'
+            type: array
+        "500":
+          description: Error message
+          schema:
+            $ref: '#/definitions/journal.ErrorResponse'
+      summary: Get user-specific journal entries
+      tags:
+      - journal
+  /profile/{userid}:
+    get:
+      description: Retrieves the profile of the user with the specified user ID.
+      operationId: get-profile
+      parameters:
+      - description: The ID of the user whose profile to get
+        in: path
+        name: userid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Profile retrieved successfully
+          schema:
+            $ref: '#/definitions/profile.Profile'
+        "401":
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/profile.ErrorResponse'
+        "500":
+          description: Could not retrieve profile
+          schema:
+            $ref: '#/definitions/profile.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Retrieve a user's profile.
+      tags:
+      - profile
+    post:
+      description: Creates a new profile for the user with the specified user ID using
+        the provided profile data.
+      operationId: create-profile
+      parameters:
+      - description: The ID of the user for whom the profile is to be created
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Profile object that needs to be created
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/profile.Profile'
+      responses:
+        "201":
+          description: Profile created
+          schema:
+            type: string
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/profile.ErrorResponse'
+        "401":
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/profile.ErrorResponse'
+        "500":
+          description: Could not create profile
+          schema:
+            $ref: '#/definitions/profile.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new user profile.
+      tags:
+      - profile
+    put:
+      description: Updates the profile of the user with the specified user ID using
+        the provided profile data.
+      operationId: update-profile
+      parameters:
+      - description: The ID of the user whose profile to update
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Profile object that needs to be updated
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/profile.Profile'
+      responses:
+        "200":
+          description: Profile updated
+          schema:
+            type: string
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/profile.ErrorResponse'
+        "401":
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/profile.ErrorResponse'
+        "500":
+          description: Could not update profile
+          schema:
+            $ref: '#/definitions/profile.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a user's profile.
+      tags:
+      - profile
+  /profile/{userid}/image:
+    put:
+      description: Updates the profile image of the user with the specified user ID.
+      operationId: update-profile-image
+      parameters:
+      - description: The ID of the user whose profile image to update
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Profile image to upload
+        in: formData
+        name: profileImage
+        required: true
+        type: file
+      responses:
+        "200":
+          description: Profile image updated
+          schema:
+            type: string
+        "400":
+          description: Profile image not found
+          schema:
+            $ref: '#/definitions/profile.ErrorResponse'
+        "401":
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/profile.ErrorResponse'
+        "500":
+          description: Could not upload image
+          schema:
+            $ref: '#/definitions/profile.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a user's profile image.
+      tags:
+      - profile
+  /qualifications/{userid}:
+    get:
+      description: Retrieves all qualifications associated with the specified user
+        ID.
+      operationId: get-qualifications
+      parameters:
+      - description: The ID of the user whose qualifications are to be retrieved
+        in: path
+        name: userid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/qualifications.Qualification'
+            type: array
+        "401":
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+        "500":
+          description: Could not retrieve qualifications
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all qualifications for a user.
+      tags:
+      - Qualifications
+    post:
+      description: Creates a new qualification entry associated with the specified
+        user ID using the provided qualification data.
+      operationId: post-qualification
+      parameters:
+      - description: The ID of the user for whom the qualification is to be created
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Qualification object to be created
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/qualifications.Qualification'
+      responses:
+        "200":
+          description: Qualification Created
+          schema:
+            type: string
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+        "401":
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+        "500":
+          description: Could not update qualification
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Create a new qualification for a user.
+      tags:
+      - Qualifications
+  /qualifications/{userid}/{qualificationid}:
+    delete:
+      description: Deletes the qualification entry associated with the specified user
+        ID and qualification ID.
+      operationId: delete-qualification-entry
+      parameters:
+      - description: The ID of the user whose qualification is to be deleted
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: The ID of the qualification to be deleted
+        in: path
+        name: qualificationid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Qualification deleted
+          schema:
+            type: string
+        "401":
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+        "500":
+          description: Could not delete qualification
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete a specific qualification for a user.
+      tags:
+      - Qualifications
+    get:
+      description: Retrieves the qualification entry associated with the specified
+        user ID and qualification ID.
+      operationId: get-qualification-entry
+      parameters:
+      - description: The ID of the user whose qualification is to be retrieved
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: The ID of the qualification to be retrieved
+        in: path
+        name: qualificationid
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/qualifications.Qualification'
+        "401":
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+        "500":
+          description: Could not retrieve qualification
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a specific qualification for a user.
+      tags:
+      - Qualifications
+    put:
+      description: Updates the qualification entry associated with the specified user
+        ID and qualification ID using the provided qualification data.
+      operationId: put-qualification-entry
+      parameters:
+      - description: The ID of the user whose qualification is to be updated
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: The ID of the qualification to be updated
+        in: path
+        name: qualificationid
+        required: true
+        type: string
+      - description: Qualification object that needs to be updated
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/qualifications.Qualification'
+      responses:
+        "200":
+          description: Qualification updated
+          schema:
+            type: string
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+        "401":
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+        "500":
+          description: Could not update qualification
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update a specific qualification for a user.
+      tags:
+      - Qualifications
+  /qualifications/{userid}/{qualificationid}/cert_image:
+    put:
+      consumes:
+      - multipart/form-data
+      description: Updates the certificate image for the qualification associated
+        with the specified user ID and qualification ID using the provided image file.
+      operationId: put-qualification-image
+      parameters:
+      - description: The ID of the user whose qualification certificate image is to
+          be updated
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: The ID of the qualification whose certificate image is to be
+          updated
+        in: path
+        name: qualificationid
+        required: true
+        type: string
+      - description: Certificate image file to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: cert image uploaded
+          schema:
+            type: string
+        "400":
+          description: invalid request body
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+        "401":
+          description: Not authenticated
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+        "500":
+          description: could not update qualification
+          schema:
+            $ref: '#/definitions/qualifications.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Upload a certificate image for a qualification.
+      tags:
+      - Qualifications
+  /skills/{userid}:
+    get:
+      description: Retrieve all skills for a specific user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Skills retrieved
+          schema:
+            items:
+              $ref: '#/definitions/skills.Skill'
+            type: array
+        "401":
+          description: "error\":\t\"Unauthorized"
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "403":
+          description: "error\":\t\"Forbidden"
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "404":
+          description: "error\":\t\"Skill not found"
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "500":
+          description: "error\":\t\"Could not retrieve skills"
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+      summary: Retrieve all skills for a specific user
+      tags:
+      - Skills
+    post:
+      consumes:
+      - application/json
+      description: Create a new skill for a specific user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Skill details
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/skills.Skill'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Skill created
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "404":
+          description: Skill not found
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "409":
+          description: Skill already exists
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "500":
+          description: Could not create skill
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+      summary: Create a new skill for a specific user
+      tags:
+      - Skills
+  /skills/{userid}/{skillId}:
+    put:
+      consumes:
+      - application/json
+      description: Update a specific skill for a specific user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Skill Name
+        in: path
+        name: skillname
+        required: true
+        type: string
+      - description: Skill details
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/skills.Skill'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Skill updated
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "404":
+          description: Skill not found
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "500":
+          description: Could not update skill
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+      summary: Update a specific skill for a specific user
+      tags:
+      - Skills
+  /skills/{userid}/{skillid}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a specific skill for a specific user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Skill ID
+        in: path
+        name: skillid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Skill deleted
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "404":
+          description: Skill not found
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "422":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "429":
+          description: Too many requests
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "500":
+          description: Could not delete skill
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+      summary: Delete a specific skill for a specific user
+      tags:
+      - Skills
+    get:
+      description: Retrieve a specific skill for a specific user
+      parameters:
+      - description: User ID
+        in: path
+        name: userid
+        required: true
+        type: string
+      - description: Skill ID
+        in: path
+        name: skillid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Skill retrieved
+          schema:
+            $ref: '#/definitions/skills.Skill'
+        "401":
+          description: "error\":\t\"Unauthorized"
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "404":
+          description: "error\":\t\"Skill not found"
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+        "500":
+          description: "error\":\t\"Could not retrieve skill"
+          schema:
+            $ref: '#/definitions/skills.JSONResponse'
+      summary: Retrieve a specific skill for a specific user
+      tags:
+      - Skills
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"

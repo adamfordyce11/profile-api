@@ -1,0 +1,51 @@
+version: "3"
+
+vars:
+  IMAGE_NAME: profile-api
+  LOCAL_TAG: "{{.IMAGE_NAME}}:local"
+  AMD64_TAG: "{{.IMAGE_NAME}}:amd64"
+  ARM64_TAG: "{{.IMAGE_NAME}}:arm64"
+  GHCR_USER: adamfordyce11
+  GHCR_REPO: "ghcr.io/{{.GHCR_USER}}/{{.IMAGE_NAME}}"
+  OUTPUT_TAR: "{{.IMAGE_NAME}}_amd64.tar.xz"
+
+env:
+  DOCKER_CONFIG: ".docker-config"
+
+tasks:
+
+  default:
+    desc: Show available tasks
+    cmds:
+      - task --list
+
+  build:local:
+    desc: Build local image for host architecture
+    cmds:
+      - docker build -t {{.LOCAL_TAG}} .
+
+  build:amd64-tar:
+    desc: Build amd64 image and save as tar.xz archive
+    cmds:
+      - docker buildx build \
+          --platform linux/amd64 \
+          --output type=docker,name={{.AMD64_TAG}} | docker load
+      - docker save {{.AMD64_TAG}} | xz -c > {{.OUTPUT_TAR}}
+    requires:
+      vars: [AMD64_TAG]
+
+  login:ghcr:
+    desc: Log in to GitHub Container Registry
+    cmds:
+      - mkdir -p $DOCKER_CONFIG
+      - echo '{"auths":{"ghcr.io":{"auth":"'$(echo -n "$GHCR_USER:$GHCR_PAT" | base64)'"}}}' > $DOCKER_CONFIG/config.json
+
+  push:ghcr:
+    desc: Build and push multi-arch image to GitHub Container Registry (GHCR)
+    cmds:
+      - docker buildx build \
+          --platform linux/arm64,linux/amd64 \
+          --tag {{.GHCR_REPO}}:latest \
+          --push \
+          .
+
